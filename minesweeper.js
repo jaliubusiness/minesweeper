@@ -2,11 +2,12 @@ var board = [];
 var rows = 8;
 var columns = 8;
 
-var minesCount = 4;
+var minesCount = 8;
 var minesLocation = []; // "2-2", "3-4", "2-1"
 
 var tilesClicked = 0; // goal to click all tiles except the ones containing mines
 var flagEnabled = false;
+var cheatEnabled = false;
 
 var gameOver = false;
 
@@ -36,6 +37,7 @@ function startGame() {
     document.getElementById("mines-count").innerText = minesCount; // changes the text in the element 'mines-count' to minesCount
     document.getElementById("flag-button").addEventListener("click", setFlag); // if the flag button is clicked, call setFlag function
     document.getElementById("reset-button").addEventListener("click", resetGame);
+    document.getElementById("cheat-button").addEventListener("click", cheatButton);
     setMines();
 
     
@@ -58,6 +60,7 @@ function resetGame() {
     minesLocation = [];
     gameOver = false;
     flagEnabled = false;
+    cheatEnabled = false;
     tilesClicked = 0;
     console.log("HELP");
     resetTilesAndFlags();
@@ -79,6 +82,9 @@ function resetTilesAndFlags() {
 }
 
 function setFlag() {
+    if(cheatEnabled)
+    cheatEnabled = false;
+
     if(flagEnabled) {
         flagEnabled = false;
         document.getElementById("flag-button").style.backgroundColor = "lightgray";
@@ -94,11 +100,25 @@ function clickTile() {
     }
     let tile = this; // 'this' is the tile.id that was clicked and triggered this function
     if(flagEnabled) {
+
         if(tile.innerText == "") {
             tile.innerText = "🚩"
         } else if(tile.innerText == "🚩") {
             tile.innerText = "";
         }
+        return;
+    }
+    
+    if(cheatEnabled) {
+        if(!minesLocation.includes(tile.id))
+        return;
+
+        if(tile.innerText == "") {
+            tile.innerText = "🥵"
+        } else if(tile.innerText == "🥵") {
+            tile.innerText = "";
+        }
+        console.log("returned");
         return;
     }
 
@@ -112,6 +132,7 @@ function clickTile() {
     let coords = tile.id.split("-"); // "0-0" =-> ["0", "0"]
     let r = parseInt(coords[0]);
     let c = parseInt(coords[1]);
+    console.log("mine checked");
     checkMine(r, c);
 }
 
@@ -192,4 +213,15 @@ function checkTile(r, c) {
     }
 
     return 0;
+}
+
+function cheatButton() {
+    if(cheatEnabled) {
+        cheatEnabled = false;
+        document.getElementById("cheat-button").style.backgroundColor = "lightgray";
+    }
+    else {
+        cheatEnabled = true;
+        document.getElementById("cheat-button").style.backgroundColor = "darkgray";
+    }
 }
