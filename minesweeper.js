@@ -110,15 +110,11 @@ function clickTile() {
     }
     
     if(cheatEnabled) {
-        if(!minesLocation.includes(tile.id))
-        return;
-
-        if(tile.innerText == "") {
-            tile.innerText = "🥵"
-        } else if(tile.innerText == "🥵") {
-            tile.innerText = "";
+        if(!minesLocation.includes(tile.id)) {
+            tile.innerText = "👍";
+        } else {
+            tile.innerText = "👎";
         }
-        console.log("returned");
         return;
     }
 
@@ -182,6 +178,7 @@ function checkMine(r, c) {
         board[r][c].innerText = minesFound;
         board[r][c].classList.add("x" + minesFound.toString());
     }  else {
+        board[r][c].innerText = "";
         // top 3
         checkMine(r-1, c-1); // top left
         checkMine(r-1, c); // top middle
